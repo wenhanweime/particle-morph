@@ -47,7 +47,13 @@ npm run preview
 
 仓库内 `screenshots/` 为本地预览截图（不一定随 git 发布）。自行重拍可用 `scripts/shoot.mjs` / `shoot-pin.mjs`（需 Chrome + 本地 dev server）。
 
+## 在线演示 / Live demo
+
+- **GitHub Pages:** https://wenhanweime.github.io/particle-morph/
+- **源码:** https://github.com/wenhanweime/particle-morph
+
 ## 部署 / Deploy（Vercel）
+
 
 本项目为静态站点：`npm run build` → **`dist`**。
 

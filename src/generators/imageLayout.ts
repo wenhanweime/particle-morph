@@ -89,13 +89,14 @@ function parseBin(buf: ArrayBuffer): { count: number; positions: Float32Array; c
 }
 
 export async function preloadImageLayouts(): Promise<void> {
-  const indexRes = await fetch('/layouts/index.json');
+  const base = import.meta.env.BASE_URL;
+  const indexRes = await fetch(`${base}layouts/index.json`);
   indexMeta = await indexRes.json();
 
   await Promise.all(
     [...IMAGE_MODES].map(async (mode) => {
       const [binRes, meta] = await Promise.all([
-        fetch(`/layouts/${mode}.bin`),
+        fetch(`${base}layouts/${mode}.bin`),
         Promise.resolve(indexMeta![mode]),
       ]);
       if (!binRes.ok) throw new Error(`Failed to load layout ${mode}`);
