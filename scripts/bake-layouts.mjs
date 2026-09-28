@@ -54,6 +54,11 @@ const MODE_REFS = {
   pinCosmicBurst: { file: 'pinterest/cosmic-burst-23.jpg', depth: 'radial' },
   pinParticleNetwork: { file: 'pinterest/particle-network-24.jpg', depth: 'cloud' },
 
+  // Pinterest batch 3 (25–27) — pin.it Sep 29
+  pinStardustPath: { file: 'pinterest/grey-space-wallpaper-25.jpg', depth: 'cloud' },
+  pinDarkVortex: { file: 'pinterest/dark-space-field-26.jpg', depth: 'swirl' },
+  pinParticleAbyss: { file: 'pinterest/astronomy-simulation-27.jpg', depth: 'tunnel' },
+
   // NASA Image Library (public domain) — colorful RGB preserved
   nasaPillars: { file: 'nasa/pillars-of-creation.jpg', depth: 'cloud', colorful: true },
   nasaCrab: { file: 'nasa/crab-nebula.jpg', depth: 'swirl', colorful: true },

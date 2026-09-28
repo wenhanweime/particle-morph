@@ -31,6 +31,9 @@ export type ModeId =
   | 'pinBHFlow'
   | 'pinCosmicBurst'
   | 'pinParticleNetwork'
+  | 'pinStardustPath'
+  | 'pinDarkVortex'
+  | 'pinParticleAbyss'
   | 'nasaPillars'
   | 'nasaCrab'
   | 'nasaCarina'
@@ -87,6 +90,10 @@ export const MODES: ModeInfo[] = [
   { id: 'pinBHFlow', label: '黑洞粒子流', key: 'v', group: 'Pinterest B' },
   { id: 'pinCosmicBurst', label: '宇宙粒子爆发', key: 'w', group: 'Pinterest B' },
   { id: 'pinParticleNetwork', label: '粒子宇宙网络', key: 'x', group: 'Pinterest B' },
+
+  { id: 'pinStardustPath', label: '星尘之路', key: 'y', group: 'Pinterest C' },
+  { id: 'pinDarkVortex', label: '暗域漩涡', key: 'z', group: 'Pinterest C' },
+  { id: 'pinParticleAbyss', label: '星尘深渊', key: '9', group: 'Pinterest C' },
 
   { id: 'nasaPillars', label: '创生之柱', key: 'A', group: 'NASA' },
   { id: 'nasaCrab', label: '蟹状星云', key: 'B', group: 'NASA' },
