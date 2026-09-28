@@ -3,7 +3,7 @@ import type { ParticleSystem } from '../core/ParticleSystem';
 
 export function createUI(root: HTMLElement, system: ParticleSystem): void {
   const panel = document.createElement('div');
-  panel.className = 'ui-panel';
+  panel.className = 'ui-panel is-collapsed';
   panel.innerHTML = `
     <button type="button" class="ui-toggle" aria-label="收起控制面板" aria-expanded="true">←</button>
     <div class="ui-content">
@@ -27,13 +27,13 @@ export function createUI(root: HTMLElement, system: ParticleSystem): void {
   root.appendChild(panel);
 
   const toggle = panel.querySelector('.ui-toggle') as HTMLButtonElement;
-  const mobileQuery = window.matchMedia(
-    '(max-width: 768px), (pointer: coarse) and (max-height: 900px)',
-  );
-  let collapsed = mobileQuery.matches;
+  // Only treat as desktop when wide AND fine pointer. Everything else stays collapsed by default.
+  const desktopQuery = window.matchMedia('(min-width: 769px) and (pointer: fine)');
+  let collapsed = !desktopQuery.matches;
   let userToggled = false;
   const syncPanel = (): void => {
     panel.classList.toggle('is-collapsed', collapsed);
+    panel.classList.toggle('is-mobile-chrome', !desktopQuery.matches);
     toggle.setAttribute('aria-expanded', String(!collapsed));
     toggle.setAttribute('aria-label', collapsed ? '展开控制面板' : '收起控制面板');
     toggle.textContent = collapsed ? '→' : '←';
@@ -43,8 +43,8 @@ export function createUI(root: HTMLElement, system: ParticleSystem): void {
     collapsed = !collapsed;
     syncPanel();
   });
-  mobileQuery.addEventListener('change', (event) => {
-    if (!userToggled) collapsed = event.matches;
+  desktopQuery.addEventListener('change', () => {
+    if (!userToggled) collapsed = !desktopQuery.matches;
     syncPanel();
   });
   syncPanel();

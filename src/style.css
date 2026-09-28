@@ -66,6 +66,37 @@ html, body, #app {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Collapsed chip works on any viewport (do not gate behind media query). */
+.ui-panel.is-collapsed {
+  left: 0;
+  right: auto;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  width: 48px;
+  height: 48px;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border-radius: 0 14px 14px 0;
+  overflow: hidden;
+}
+
+.ui-panel.is-collapsed .ui-content {
+  display: none;
+}
+
+.ui-panel.is-collapsed .ui-toggle {
+  display: flex;
+  position: static;
+  width: 48px;
+  height: 48px;
+  border-radius: 0 14px 14px 0;
+  background: rgba(8, 10, 14, 0.78);
+}
+
+.ui-panel.is-mobile-chrome:not(.is-collapsed) .ui-toggle {
+  display: flex;
+}
+
 .ui-top {
   display: flex;
   align-items: baseline;
@@ -230,59 +261,37 @@ html, body, #app {
   line-height: 1.5;
 }
 
-@media (max-width: 768px), (pointer: coarse) and (max-height: 900px) {
-  .ui-panel {
-    left: 10px;
-    right: 10px;
-    bottom: max(10px, env(safe-area-inset-bottom));
-    max-width: none;
-    max-height: 45vh;
-    padding: 10px 12px;
-    overflow: hidden;
-  }
+/* Expanded panel on phones / coarse pointers: bottom sheet, not full-bleed card. */
+.ui-panel.is-mobile-chrome:not(.is-collapsed) {
+  left: 10px;
+  right: 10px;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  max-width: none;
+  max-height: min(42vh, 360px);
+  padding: 10px 12px;
+  overflow: hidden;
+}
 
-  .ui-content {
-    max-height: calc(45vh - 20px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-  }
+.ui-panel.is-mobile-chrome:not(.is-collapsed) .ui-content {
+  max-height: calc(min(42vh, 360px) - 20px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
 
-  .ui-toggle {
-    display: flex;
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-  }
+.ui-panel.is-mobile-chrome:not(.is-collapsed) .ui-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
 
-  .ui-top { padding-right: 44px; }
-  .ui-modes {
-    max-height: none;
-    overflow: visible;
-  }
-
-  .ui-panel.is-collapsed {
-    left: 0;
-    right: auto;
-    bottom: max(10px, env(safe-area-inset-bottom));
-    width: 48px;
-    height: 48px;
-    max-height: none;
-    padding: 0;
-    border-radius: 0 14px 14px 0;
-  }
-
-  .ui-panel.is-collapsed .ui-content { display: none; }
-  .ui-panel.is-collapsed .ui-toggle {
-    position: static;
-    width: 48px;
-    height: 48px;
-    border-radius: 0 14px 14px 0;
-    background: rgba(8, 10, 14, 0.72);
-  }
+.ui-panel.is-mobile-chrome:not(.is-collapsed) .ui-top { padding-right: 48px; }
+.ui-panel.is-mobile-chrome:not(.is-collapsed) .ui-modes {
+  max-height: none;
+  overflow: visible;
 }
 
 @media (max-width: 560px) {
