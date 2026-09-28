@@ -1,0 +1,9 @@
+{
+  "mode": "pinGranularLens",
+  "planeW": 9,
+  "planeH": 15.994565217391305,
+  "aspect": 1.7771739130434783,
+  "count": 60000,
+  "source": "pinterest/granular-lens-13.jpg",
+  "depth": "mode-3d-blackHole"
+}

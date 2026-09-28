@@ -1,0 +1,9 @@
+{
+  "mode": "pinCosmicBurst",
+  "planeW": 14,
+  "planeH": 13.988323603002502,
+  "aspect": 0.9991659716430359,
+  "count": 60000,
+  "source": "pinterest/cosmic-burst-23.jpg",
+  "depth": "mode-3d-radial"
+}

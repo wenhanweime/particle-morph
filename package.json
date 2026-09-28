@@ -1,0 +1,28 @@
+{
+  "name": "particle-morph",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "bake": "node scripts/bake-layouts.mjs",
+    "predev": "node scripts/bake-layouts.mjs",
+    "prebuild": "node scripts/bake-layouts.mjs",
+    "weekly-nasa": "node scripts/weekly-nasa.mjs"
+  },
+  "devDependencies": {
+    "@types/three": "^0.185.4",
+    "puppeteer-core": "^25.10.0",
+    "sharp": "^0.35.4",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "three": "^0.186.0"
+  },
+  "description": "Fullscreen particle morph demo \u2014 image-sampled layouts (Pinterest + NASA) with Three.js",
+  "license": "MIT",
+  "author": "PandorAI"
+}

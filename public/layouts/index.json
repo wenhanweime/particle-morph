@@ -1,0 +1,380 @@
+{
+  "spiral": {
+    "mode": "spiral",
+    "planeW": 9,
+    "planeH": 19.554545454545455,
+    "aspect": 2.172727272727273,
+    "count": 60000,
+    "source": "c74056b61594f1544cc489c8006f62dc7693251e7c28f38652400feaa02a0951.jpeg",
+    "depth": "mode-3d-swirl"
+  },
+  "nebulaArm": {
+    "mode": "nebulaArm",
+    "planeW": 9,
+    "planeH": 19.554545454545455,
+    "aspect": 2.172727272727273,
+    "count": 60000,
+    "source": "a02b09724d9d40a677f419e56c1e2b8ccd5e5cfafd91573a871dbc7531de84dc.jpeg",
+    "depth": "mode-3d-nebula"
+  },
+  "tunnel": {
+    "mode": "tunnel",
+    "planeW": 9,
+    "planeH": 19.554545454545455,
+    "aspect": 2.172727272727273,
+    "count": 60000,
+    "source": "f5ef5dc53538cef20e92332afaf43c2992673a0e37151afc32c8bf20f6ef35f7.jpeg",
+    "depth": "mode-3d-tunnel"
+  },
+  "blackHole": {
+    "mode": "blackHole",
+    "planeW": 9,
+    "planeH": 19.554545454545455,
+    "aspect": 2.172727272727273,
+    "count": 60000,
+    "source": "061b80a4409b7989c6200cb738d5e480c21853a863d6baebddef7e77898e5eb6.jpeg",
+    "depth": "mode-3d-blackHole"
+  },
+  "emberStorm": {
+    "mode": "emberStorm",
+    "planeW": 9,
+    "planeH": 19.554545454545455,
+    "aspect": 2.172727272727273,
+    "count": 60000,
+    "source": "9543807ffb4e1f7db6ead2eb64cf2a9e15955b6a5a5069e9cfee56f3b17a799b.jpeg",
+    "depth": "mode-3d-cloud"
+  },
+  "pinVortex": {
+    "mode": "pinVortex",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/vortex-01.jpg",
+    "depth": "mode-3d-swirl"
+  },
+  "pinNebulaArm": {
+    "mode": "pinNebulaArm",
+    "planeW": 9,
+    "planeH": 15.75,
+    "aspect": 1.75,
+    "count": 60000,
+    "source": "pinterest/nebula-arm-02.jpg",
+    "depth": "mode-3d-nebula"
+  },
+  "pinBlackHoleHalo": {
+    "mode": "pinBlackHoleHalo",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/black-hole-03.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinRadialNebula": {
+    "mode": "pinRadialNebula",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/radial-nebula-04.jpg",
+    "depth": "mode-3d-radial"
+  },
+  "pinStarTunnel": {
+    "mode": "pinStarTunnel",
+    "planeW": 9,
+    "planeH": 13.5,
+    "aspect": 1.5,
+    "count": 60000,
+    "source": "pinterest/star-tunnel-05.png",
+    "depth": "mode-3d-tunnel"
+  },
+  "pinGalaxy": {
+    "mode": "pinGalaxy",
+    "planeW": 14,
+    "planeH": 9.333333333333332,
+    "aspect": 0.6666666666666666,
+    "count": 60000,
+    "source": "pinterest/particle-galaxy-06.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "pinBrightVortex": {
+    "mode": "pinBrightVortex",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/bright-vortex-07.jpg",
+    "depth": "mode-3d-swirl"
+  },
+  "pinAccretion": {
+    "mode": "pinAccretion",
+    "planeW": 9,
+    "planeH": 16.055706521739133,
+    "aspect": 1.783967391304348,
+    "count": 60000,
+    "source": "pinterest/accretion-disk-08.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinGranularBH": {
+    "mode": "pinGranularBH",
+    "planeW": 9,
+    "planeH": 14.69836956521739,
+    "aspect": 1.6331521739130435,
+    "count": 60000,
+    "source": "pinterest/granular-blackhole-09.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinSpiralGalaxy": {
+    "mode": "pinSpiralGalaxy",
+    "planeW": 9,
+    "planeH": 15.9975,
+    "aspect": 1.7775,
+    "count": 60000,
+    "source": "pinterest/spiral-galaxy-10.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "pinWormholeRing": {
+    "mode": "pinWormholeRing",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/wormhole-ring-11.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinStarfield": {
+    "mode": "pinStarfield",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/starfield-particles-12.jpg",
+    "depth": "mode-3d-cloud"
+  },
+  "pinGranularLens": {
+    "mode": "pinGranularLens",
+    "planeW": 9,
+    "planeH": 15.994565217391305,
+    "aspect": 1.7771739130434783,
+    "count": 60000,
+    "source": "pinterest/granular-lens-13.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinBlackHoleArc": {
+    "mode": "pinBlackHoleArc",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/black-hole-arc-14.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinGalaxyRings": {
+    "mode": "pinGalaxyRings",
+    "planeW": 9,
+    "planeH": 14.534693877551021,
+    "aspect": 1.6149659863945578,
+    "count": 60000,
+    "source": "pinterest/galaxy-particle-rings-15.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "pinStarDustGalaxy": {
+    "mode": "pinStarDustGalaxy",
+    "planeW": 9,
+    "planeH": 12.941336971350614,
+    "aspect": 1.4379263301500682,
+    "count": 60000,
+    "source": "pinterest/star-dust-galaxy-16.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "pinMonoVortex": {
+    "mode": "pinMonoVortex",
+    "planeW": 9,
+    "planeH": 9,
+    "aspect": 1,
+    "count": 60000,
+    "source": "pinterest/monochrome-vortex-17.jpg",
+    "depth": "mode-3d-swirl"
+  },
+  "pinPixelSpiral": {
+    "mode": "pinPixelSpiral",
+    "planeW": 9,
+    "planeH": 9,
+    "aspect": 1,
+    "count": 60000,
+    "source": "pinterest/pixel-spiral-18.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "pinDustField": {
+    "mode": "pinDustField",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/particle-dust-field-19.jpg",
+    "depth": "mode-3d-cloud"
+  },
+  "pinStarDustTunnel": {
+    "mode": "pinStarDustTunnel",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/star-dust-tunnel-20.jpg",
+    "depth": "mode-3d-tunnel"
+  },
+  "pinWormholeParticle": {
+    "mode": "pinWormholeParticle",
+    "planeW": 9,
+    "planeH": 16,
+    "aspect": 1.7777777777777777,
+    "count": 60000,
+    "source": "pinterest/wormhole-particle-ring-21.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinBHFlow": {
+    "mode": "pinBHFlow",
+    "planeW": 14,
+    "planeH": 13.941666666666666,
+    "aspect": 0.9958333333333333,
+    "count": 60000,
+    "source": "pinterest/black-hole-flow-22.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "pinCosmicBurst": {
+    "mode": "pinCosmicBurst",
+    "planeW": 14,
+    "planeH": 13.988323603002502,
+    "aspect": 0.9991659716430359,
+    "count": 60000,
+    "source": "pinterest/cosmic-burst-23.jpg",
+    "depth": "mode-3d-radial"
+  },
+  "pinParticleNetwork": {
+    "mode": "pinParticleNetwork",
+    "planeW": 9,
+    "planeH": 11.25,
+    "aspect": 1.25,
+    "count": 60000,
+    "source": "pinterest/particle-network-24.jpg",
+    "depth": "mode-3d-cloud"
+  },
+  "nasaPillars": {
+    "mode": "nasaPillars",
+    "planeW": 14,
+    "planeH": 13.117708333333333,
+    "aspect": 0.9369791666666667,
+    "count": 60000,
+    "source": "nasa/pillars-of-creation.jpg",
+    "depth": "mode-3d-cloud"
+  },
+  "nasaCrab": {
+    "mode": "nasaCrab",
+    "planeW": 9,
+    "planeH": 9,
+    "aspect": 1,
+    "count": 60000,
+    "source": "nasa/crab-nebula.jpg",
+    "depth": "mode-3d-swirl"
+  },
+  "nasaCarina": {
+    "mode": "nasaCarina",
+    "planeW": 14,
+    "planeH": 8.101041666666667,
+    "aspect": 0.5786458333333333,
+    "count": 60000,
+    "source": "nasa/carina-cosmic-cliffs.jpg",
+    "depth": "mode-3d-nebula"
+  },
+  "nasaAndromeda": {
+    "mode": "nasaAndromeda",
+    "planeW": 9,
+    "planeH": 9,
+    "aspect": 1,
+    "count": 60000,
+    "source": "nasa/andromeda.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "nasaWhirlpool": {
+    "mode": "nasaWhirlpool",
+    "planeW": 9,
+    "planeH": 11.236111111111112,
+    "aspect": 1.248456790123457,
+    "count": 60000,
+    "source": "nasa/whirlpool-galaxy.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "nasaSombrero": {
+    "mode": "nasaSombrero",
+    "planeW": 9,
+    "planeH": 10.964467005076143,
+    "aspect": 1.218274111675127,
+    "count": 60000,
+    "source": "nasa/sombrero-galaxy.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "nasaHelix": {
+    "mode": "nasaHelix",
+    "planeW": 9,
+    "planeH": 9,
+    "aspect": 1,
+    "count": 60000,
+    "source": "nasa/helix-nebula.jpg",
+    "depth": "mode-3d-radial"
+  },
+  "nasaBHSim": {
+    "mode": "nasaBHSim",
+    "planeW": 9,
+    "planeH": 11.646486486486488,
+    "aspect": 1.2940540540540542,
+    "count": 60000,
+    "source": "nasa/black-hole-sim.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "nasaMWCenter": {
+    "mode": "nasaMWCenter",
+    "planeW": 14,
+    "planeH": 7,
+    "aspect": 0.5,
+    "count": 60000,
+    "source": "nasa/milky-way-center.jpg",
+    "depth": "mode-3d-galaxy"
+  },
+  "nasaEagle": {
+    "mode": "nasaEagle",
+    "planeW": 9,
+    "planeH": 9,
+    "aspect": 1,
+    "count": 60000,
+    "source": "nasa/eagle-nebula.jpg",
+    "depth": "mode-3d-cloud"
+  },
+  "nasaOrion": {
+    "mode": "nasaOrion",
+    "planeW": 14,
+    "planeH": 11.666666666666668,
+    "aspect": 0.8333333333333334,
+    "count": 60000,
+    "source": "nasa/orion-nebula.jpg",
+    "depth": "mode-3d-cloud"
+  },
+  "nasaBehemoth": {
+    "mode": "nasaBehemoth",
+    "planeW": 14,
+    "planeH": 13.846874999999999,
+    "aspect": 0.9890625,
+    "count": 60000,
+    "source": "nasa/behemoth-black-hole.jpg",
+    "depth": "mode-3d-blackHole"
+  },
+  "nasaWeekly": {
+    "mode": "nasaWeekly",
+    "planeW": 9,
+    "planeH": 9.192592592592593,
+    "aspect": 1.0213991769547326,
+    "count": 60000,
+    "source": "nasa/weekly-latest.jpg",
+    "depth": "mode-3d-cloud"
+  }
+}
