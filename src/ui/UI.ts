@@ -21,22 +21,46 @@ export function createUI(root: HTMLElement, system: ParticleSystem): void {
           <button type="button" class="ui-q" data-q="high">高</button>
         </div>
       </div>
-      <div class="ui-hint">拖拽旋转 · 滚轮缩放 · 1–8 / a–x / Shift+A–L(NASA) · / 筛选</div>
+      <div class="ui-hint">拖拽旋转 · 滚轮缩放 · 轻扫切模式 · 1–8 / a–x / Shift+A–L(NASA) · / 筛选</div>
     </div>
   `;
   root.appendChild(panel);
+
+  // Floating next/prev — haptic-friendly glass pills for phones
+  const nav = document.createElement('div');
+  nav.className = 'ui-nav';
+  nav.setAttribute('aria-hidden', 'true');
+  nav.innerHTML = `
+    <button type="button" class="ui-nav-btn" data-nav="prev" aria-label="上一个模式">◀</button>
+    <button type="button" class="ui-nav-btn" data-nav="next" aria-label="下一个模式">▶</button>
+  `;
+  root.appendChild(nav);
+
+  const toast = document.createElement('div');
+  toast.className = 'ui-mode-toast';
+  toast.setAttribute('aria-live', 'polite');
+  root.appendChild(toast);
 
   const toggle = panel.querySelector('.ui-toggle') as HTMLButtonElement;
   // Only treat as desktop when wide AND fine pointer. Everything else stays collapsed by default.
   const desktopQuery = window.matchMedia('(min-width: 769px) and (pointer: fine)');
   let collapsed = !desktopQuery.matches;
   let userToggled = false;
+  let toastTimer = 0;
+
+  const syncNav = (): void => {
+    const showNav = !desktopQuery.matches && collapsed;
+    nav.classList.toggle('is-visible', showNav);
+    nav.setAttribute('aria-hidden', String(!showNav));
+  };
+
   const syncPanel = (): void => {
     panel.classList.toggle('is-collapsed', collapsed);
     panel.classList.toggle('is-mobile-chrome', !desktopQuery.matches);
     toggle.setAttribute('aria-expanded', String(!collapsed));
     toggle.setAttribute('aria-label', collapsed ? '展开控制面板' : '收起控制面板');
     toggle.textContent = collapsed ? '→' : '←';
+    syncNav();
   };
   toggle.addEventListener('click', () => {
     userToggled = true;
@@ -53,6 +77,34 @@ export function createUI(root: HTMLElement, system: ParticleSystem): void {
   const filterEl = panel.querySelector('.ui-filter') as HTMLInputElement;
   const pills = new Map<ModeId, HTMLButtonElement>();
   const groupEls = new Map<string, HTMLElement>();
+
+  const stepMode = (dir: -1 | 1, fromGesture = false): void => {
+    system.setAutoDemo(false);
+    syncAuto();
+    if (dir > 0) system.nextMode();
+    else system.prevMode();
+    if (fromGesture) {
+      try {
+        navigator.vibrate?.(12);
+      } catch {
+        /* ignore */
+      }
+    }
+  };
+
+  nav.querySelector('[data-nav="prev"]')!.addEventListener('click', (e) => {
+    e.stopPropagation();
+    stepMode(-1, true);
+  });
+  nav.querySelector('[data-nav="next"]')!.addEventListener('click', (e) => {
+    e.stopPropagation();
+    stepMode(1, true);
+  });
+
+  // Horizontal flick on canvas → next/prev (orbit kept for slower/vertical drags)
+  system.controls.onHorizontalFlick = (dir) => {
+    stepMode(dir, true);
+  };
 
   let lastGroup = '';
   for (const m of MODES) {
@@ -115,13 +167,29 @@ export function createUI(root: HTMLElement, system: ParticleSystem): void {
     });
   });
 
+  const showToast = (mode: ModeId): void => {
+    const info = MODES.find((m) => m.id === mode);
+    if (!info) return;
+    toast.innerHTML = `<span class="toast-key">${info.key}</span><span class="toast-label">${info.label}</span>`;
+    toast.classList.remove('is-out');
+    toast.classList.add('is-in');
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      toast.classList.remove('is-in');
+      toast.classList.add('is-out');
+    }, 1100);
+  };
+
   const syncMode = (mode: ModeId): void => {
     pills.forEach((btn, id) => btn.classList.toggle('active', id === mode));
     const active = pills.get(mode);
     active?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    showToast(mode);
+    system.pulse();
   };
   system.onModeChange = syncMode;
-  syncMode(system.currentMode);
+  // Initial sync without toast/pulse flash
+  pills.forEach((btn, id) => btn.classList.toggle('active', id === system.currentMode));
 
   window.addEventListener('keydown', (e) => {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;

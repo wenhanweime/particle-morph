@@ -260,6 +260,35 @@ export class ParticleSystem {
     this.setMode(next.id);
   }
 
+  prevMode(): void {
+    const idx = MODES.findIndex((m) => m.id === this.mode);
+    const prev = MODES[(idx - 1 + MODES.length) % MODES.length];
+    this.setMode(prev.id);
+  }
+
+  /** Brief bloom kick on mode switch — lightweight feedback, no shader churn. */
+  pulse(extra = 0.32): void {
+    const base = this.bloomPass.strength;
+    const peak = Math.min(base + extra, 1.35);
+    this.bloomPass.strength = peak;
+    const sizeBase = this.material.uniforms.uSizeScale.value as number;
+    this.material.uniforms.uSizeScale.value = sizeBase * 1.08;
+    const start = performance.now();
+    const dur = 320;
+    const tick = (): void => {
+      const t = Math.min(1, (performance.now() - start) / dur);
+      const ease = 1 - (1 - t) * (1 - t);
+      this.bloomPass.strength = peak + (base - peak) * ease;
+      this.material.uniforms.uSizeScale.value = sizeBase * (1.08 + (1 - 1.08) * ease);
+      if (t < 1) requestAnimationFrame(tick);
+      else {
+        this.bloomPass.strength = base;
+        this.material.uniforms.uSizeScale.value = sizeBase;
+      }
+    };
+    requestAnimationFrame(tick);
+  }
+
   private syncAttributes(full = false): void {
     (this.posAttr.array as Float32Array).set(this.morph.current.positions);
     (this.colAttr.array as Float32Array).set(this.morph.current.colors);

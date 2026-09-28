@@ -21,6 +21,17 @@ export class OrbitZoomControls {
   readonly pointerNDC = new THREE.Vector2(0, 0);
   forceStrength = 0;
 
+  /** Fired on a clear horizontal touch flick: -1 = right (prev), +1 = left (next). */
+  onHorizontalFlick?: (dir: -1 | 1) => void;
+
+  private pointerId: number | null = null;
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private touchStartT = 0;
+  private touchMoved = false;
+  private isTouchDrag = false;
+  private trackedPointers = new Set<number>();
+
   constructor(camera: THREE.PerspectiveCamera, dom: HTMLElement) {
     this.camera = camera;
     this.dom = dom;
@@ -64,6 +75,7 @@ export class OrbitZoomControls {
   private bind(): void {
     this.dom.addEventListener('pointerdown', this.onDown);
     window.addEventListener('pointerup', this.onUp);
+    window.addEventListener('pointercancel', this.onUp);
     window.addEventListener('pointermove', this.onMove);
     this.dom.addEventListener('wheel', this.onWheel, { passive: false });
   }
@@ -71,19 +83,74 @@ export class OrbitZoomControls {
   dispose(): void {
     this.dom.removeEventListener('pointerdown', this.onDown);
     window.removeEventListener('pointerup', this.onUp);
+    window.removeEventListener('pointercancel', this.onUp);
     window.removeEventListener('pointermove', this.onMove);
     this.dom.removeEventListener('wheel', this.onWheel);
   }
 
+  private isUiTarget(el: EventTarget | null): boolean {
+    const node = el as HTMLElement | null;
+    return Boolean(node?.closest?.('.ui-panel, .ui-nav, .ui-toast, .ui-mode-toast'));
+  }
+
   private onDown = (e: PointerEvent): void => {
-    if ((e.target as HTMLElement).closest?.('.ui-panel')) return;
+    if (this.isUiTarget(e.target)) return;
+    this.trackedPointers.add(e.pointerId);
+    // Multi-touch: cancel single-finger orbit / flick (pinch/zoom stays untouched)
+    if (this.trackedPointers.size > 1) {
+      this.dragging = false;
+      this.isTouchDrag = false;
+      this.pointerId = null;
+      return;
+    }
     this.dragging = true;
+    this.pointerId = e.pointerId;
     this.prevX = e.clientX;
     this.prevY = e.clientY;
+    this.isTouchDrag = e.pointerType === 'touch';
+    this.touchStartX = e.clientX;
+    this.touchStartY = e.clientY;
+    this.touchStartT = performance.now();
+    this.touchMoved = false;
+    try {
+      this.dom.setPointerCapture?.(e.pointerId);
+    } catch {
+      /* ignore */
+    }
   };
 
-  private onUp = (): void => {
+  private onUp = (e: PointerEvent): void => {
+    const wasTracked = this.trackedPointers.delete(e.pointerId);
+    if (!wasTracked) return;
+
+    const isPrimary = this.pointerId === e.pointerId;
+    if (!isPrimary) {
+      // Second finger lifted — if one remains, do not start a new orbit mid-gesture
+      return;
+    }
+
+    const wasTouch = this.isTouchDrag;
+    const startX = this.touchStartX;
+    const startY = this.touchStartY;
+    const startT = this.touchStartT;
+    const wasDragging = this.dragging;
+
     this.dragging = false;
+    this.isTouchDrag = false;
+    this.pointerId = null;
+
+    if (!wasDragging || !wasTouch || !this.onHorizontalFlick) return;
+    if (this.trackedPointers.size > 0) return; // still multi-touch
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const dt = performance.now() - startT;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    // Clear horizontal flick: primary on phones; orbit remains for slower / vertical drags.
+    if (dt < 300 && absDx > 80 && absDx > absDy * 1.5) {
+      this.onHorizontalFlick(dx < 0 ? 1 : -1);
+    }
   };
 
   private onMove = (e: PointerEvent): void => {
@@ -96,10 +163,13 @@ export class OrbitZoomControls {
     }
 
     if (!this.dragging) return;
+    if (this.pointerId != null && e.pointerId !== this.pointerId) return;
+
     const dx = e.clientX - this.prevX;
     const dy = e.clientY - this.prevY;
     this.prevX = e.clientX;
     this.prevY = e.clientY;
+    if (Math.abs(dx) + Math.abs(dy) > 2) this.touchMoved = true;
     this.spherical.theta -= dx * 0.005;
     this.spherical.phi += dy * 0.005;
     this.clampOrbit();
