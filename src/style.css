@@ -49,6 +49,23 @@ html, body, #app {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 }
 
+.ui-content {
+  min-width: 0;
+}
+
+.ui-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  color: var(--ui-text);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .ui-top {
   display: flex;
   align-items: baseline;
@@ -213,13 +230,62 @@ html, body, #app {
   line-height: 1.5;
 }
 
-@media (max-width: 560px) {
+@media (max-width: 768px), (pointer: coarse) and (max-height: 900px) {
   .ui-panel {
     left: 10px;
     right: 10px;
-    bottom: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
     max-width: none;
-    padding: 12px;
+    max-height: 45vh;
+    padding: 10px 12px;
+    overflow: hidden;
   }
+
+  .ui-content {
+    max-height: calc(45vh - 20px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .ui-toggle {
+    display: flex;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .ui-top { padding-right: 44px; }
+  .ui-modes {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .ui-panel.is-collapsed {
+    left: 0;
+    right: auto;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    width: 48px;
+    height: 48px;
+    max-height: none;
+    padding: 0;
+    border-radius: 0 14px 14px 0;
+  }
+
+  .ui-panel.is-collapsed .ui-content { display: none; }
+  .ui-panel.is-collapsed .ui-toggle {
+    position: static;
+    width: 48px;
+    height: 48px;
+    border-radius: 0 14px 14px 0;
+    background: rgba(8, 10, 14, 0.72);
+  }
+}
+
+@media (max-width: 560px) {
+  .ui-panel { padding: 12px; }
   .ui-pill { padding: 5px 8px; font-size: 11px; }
 }

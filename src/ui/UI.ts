@@ -5,23 +5,49 @@ export function createUI(root: HTMLElement, system: ParticleSystem): void {
   const panel = document.createElement('div');
   panel.className = 'ui-panel';
   panel.innerHTML = `
-    <div class="ui-top">
-      <div class="ui-title">粒子形态</div>
-      <div class="ui-subtitle">Particle Morph · ${MODES.length} 模式</div>
-    </div>
-    <input class="ui-filter" type="search" placeholder="筛选模式… / filter" aria-label="筛选模式" />
-    <div class="ui-modes" role="listbox" aria-label="形态模式"></div>
-    <div class="ui-row">
-      <button type="button" class="ui-btn" data-action="auto">自动演示</button>
-      <div class="ui-quality" title="画质">
-        <button type="button" class="ui-q" data-q="low">低</button>
-        <button type="button" class="ui-q active" data-q="med">中</button>
-        <button type="button" class="ui-q" data-q="high">高</button>
+    <button type="button" class="ui-toggle" aria-label="收起控制面板" aria-expanded="true">←</button>
+    <div class="ui-content">
+      <div class="ui-top">
+        <div class="ui-title">粒子形态</div>
+        <div class="ui-subtitle">Particle Morph · ${MODES.length} 模式</div>
       </div>
+      <input class="ui-filter" type="search" placeholder="筛选模式… / filter" aria-label="筛选模式" />
+      <div class="ui-modes" role="listbox" aria-label="形态模式"></div>
+      <div class="ui-row">
+        <button type="button" class="ui-btn" data-action="auto">自动演示</button>
+        <div class="ui-quality" title="画质">
+          <button type="button" class="ui-q" data-q="low">低</button>
+          <button type="button" class="ui-q active" data-q="med">中</button>
+          <button type="button" class="ui-q" data-q="high">高</button>
+        </div>
+      </div>
+      <div class="ui-hint">拖拽旋转 · 滚轮缩放 · 1–8 / a–x / Shift+A–L(NASA) · / 筛选</div>
     </div>
-    <div class="ui-hint">拖拽旋转 · 滚轮缩放 · 1–8 / a–x / Shift+A–L(NASA) · / 筛选</div>
   `;
   root.appendChild(panel);
+
+  const toggle = panel.querySelector('.ui-toggle') as HTMLButtonElement;
+  const mobileQuery = window.matchMedia(
+    '(max-width: 768px), (pointer: coarse) and (max-height: 900px)',
+  );
+  let collapsed = mobileQuery.matches;
+  let userToggled = false;
+  const syncPanel = (): void => {
+    panel.classList.toggle('is-collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute('aria-label', collapsed ? '展开控制面板' : '收起控制面板');
+    toggle.textContent = collapsed ? '→' : '←';
+  };
+  toggle.addEventListener('click', () => {
+    userToggled = true;
+    collapsed = !collapsed;
+    syncPanel();
+  });
+  mobileQuery.addEventListener('change', (event) => {
+    if (!userToggled) collapsed = event.matches;
+    syncPanel();
+  });
+  syncPanel();
 
   const modesEl = panel.querySelector('.ui-modes') as HTMLElement;
   const filterEl = panel.querySelector('.ui-filter') as HTMLInputElement;
