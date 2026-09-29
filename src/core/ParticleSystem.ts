@@ -34,7 +34,7 @@ export class ParticleSystem {
   private colAttr: THREE.BufferAttribute;
   private sizeAttr: THREE.BufferAttribute;
 
-  private mode: ModeId = 'spiral';
+  private mode: ModeId = 'pinDarkVortex';
   private quality: QualityLevel = 'med';
   private count: number;
   private layoutCache = new Map<string, ParticleLayout>();

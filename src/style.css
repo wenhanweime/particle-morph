@@ -429,3 +429,88 @@ html, body, #app {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ── Loading splash (frameless star-dot) ── */
+.ui-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  pointer-events: none;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.ui-loading-stars {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+
+.ui-loading-stars .star {
+  --angle: 0deg;
+  --radius: 40px;
+  --size: 4px;
+  --delay: 0s;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2);
+  border-radius: 50%;
+  background: #eef4ff;
+  box-shadow:
+    0 0 6px 2px rgba(180, 210, 255, 0.95),
+    0 0 16px 5px rgba(120, 180, 255, 0.45);
+  transform:
+    rotate(var(--angle))
+    translateY(calc(-1 * var(--radius)));
+  opacity: 0.85;
+  animation:
+    loading-orbit 3.4s linear infinite,
+    loading-twinkle 1.5s ease-in-out infinite;
+  animation-delay: 0s, var(--delay);
+}
+
+.ui-loading-text {
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  color: rgba(210, 225, 255, 0.72);
+  text-shadow: 0 0 18px rgba(140, 180, 255, 0.35);
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  animation: loading-text-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes loading-orbit {
+  from {
+    transform:
+      rotate(var(--angle))
+      translateY(calc(-1 * var(--radius)));
+  }
+  to {
+    transform:
+      rotate(calc(var(--angle) + 360deg))
+      translateY(calc(-1 * var(--radius)));
+  }
+}
+
+@keyframes loading-twinkle {
+  0%, 100% { opacity: 0.3; filter: brightness(0.85); }
+  40% { opacity: 1; filter: brightness(1.5); }
+  70% { opacity: 0.6; filter: brightness(1.1); }
+}
+
+@keyframes loading-text-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.9; }
+}
