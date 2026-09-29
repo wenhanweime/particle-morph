@@ -1,0 +1,9 @@
+{
+  "mode": "pinGranularBH",
+  "planeW": 9,
+  "planeH": 14.69836956521739,
+  "aspect": 1.6331521739130435,
+  "count": 60000,
+  "source": "pinterest/granular-blackhole-09.jpg",
+  "depth": "mode-3d-blackHole"
+}

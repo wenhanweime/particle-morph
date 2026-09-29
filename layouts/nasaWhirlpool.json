@@ -1,0 +1,9 @@
+{
+  "mode": "nasaWhirlpool",
+  "planeW": 9,
+  "planeH": 11.236111111111112,
+  "aspect": 1.248456790123457,
+  "count": 60000,
+  "source": "nasa/whirlpool-galaxy.jpg",
+  "depth": "mode-3d-galaxy"
+}

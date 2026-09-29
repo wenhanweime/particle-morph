@@ -1,0 +1,9 @@
+{
+  "mode": "pinWormholeParticle",
+  "planeW": 9,
+  "planeH": 16,
+  "aspect": 1.7777777777777777,
+  "count": 60000,
+  "source": "pinterest/wormhole-particle-ring-21.jpg",
+  "depth": "mode-3d-blackHole"
+}

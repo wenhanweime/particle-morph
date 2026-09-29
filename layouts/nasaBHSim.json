@@ -1,0 +1,9 @@
+{
+  "mode": "nasaBHSim",
+  "planeW": 9,
+  "planeH": 11.646486486486488,
+  "aspect": 1.2940540540540542,
+  "count": 60000,
+  "source": "nasa/black-hole-sim.jpg",
+  "depth": "mode-3d-blackHole"
+}

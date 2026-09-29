@@ -1,0 +1,9 @@
+{
+  "mode": "pinPixelSpiral",
+  "planeW": 9,
+  "planeH": 9,
+  "aspect": 1,
+  "count": 60000,
+  "source": "pinterest/pixel-spiral-18.jpg",
+  "depth": "mode-3d-galaxy"
+}
