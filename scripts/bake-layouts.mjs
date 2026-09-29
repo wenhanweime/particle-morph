@@ -75,8 +75,8 @@ const MODE_REFS = {
   },
   pinDarkVortex: {
     file: 'pinterest/dark-space-field-26.jpg',
-    // Off-center glowing mouth + dark ridge: sheet preserves silhouette under perspective
-    depth: 'sheet',
+    // Volumetric bowl: luminance + distance-to-mouth + ridge thickness (not flat sheet)
+    depth: 'vortexVolume',
     gamma: 1.88,
     thresh: 0.026,
     midKill: 0.58,
@@ -85,9 +85,11 @@ const MODE_REFS = {
     darkBoost: 0.85,
     lowMul: 0.65,
     edgeBoost: 1.55,
-    scatter: 0.25,
-    depthScale: 0.5,
+    scatter: 0.38,
+    depthScale: 1.05,
     sizeScale: 1.12,
+    mouthCx: 0.82,
+    mouthCy: 0.47,
     noCornerWatermark: true,
   },
   pinParticleAbyss: {
@@ -188,6 +190,38 @@ function depthForFamily(depth, u, v, x, y, lum, edge, layer, p, cfg = {}) {
       // Near-planar poster depth — preserves front silhouette under perspective FOV
       const layerZ = (layer - 1) * 0.22;
       return (layerZ + (lum - 0.35) * 0.55 + n1 * 0.12 * scatter + edge * 0.15 * n2) * depthScale;
+    }
+    case 'vortexVolume': {
+      // Dark-vortex volumetric bowl: mouth sinks back, arms/ridges get thickness.
+      // XY stays image-sampled so front silhouette holds; Z reads as volume under orbit.
+      const mx = cfg.mouthCx ?? 0.82;
+      const my = cfg.mouthCy ?? 0.47;
+      const dx = (u - mx) * 2;
+      const dy = (v - my) * 2;
+      const rho = Math.hypot(dx, dy);
+      const ang = Math.atan2(dy, dx);
+
+      // Soft funnel — mouth deeper (-Z), outer field nearer.
+      const funnelT = Math.max(0, 1.15 - rho);
+      const funnel = -Math.pow(funnelT, 1.45) * 3.6;
+
+      // Brightness → local relief: hot cores near mouth push deeper; dim arms lift forward.
+      const lumRelief = (lum - 0.28) * (-1.45 + rho * 1.85);
+
+      // Soft parallax slabs (3 bake layers) — main thickness under orbit
+      const slab = (layer - 1) * 1.55;
+
+      // Density ridges extruded with controlled thickness (edge + bright bands)
+      const ridge = (edge * 1.25 + Math.max(0, lum - 0.18) * 1.1) * (0.75 + n1 * 0.45);
+
+      // Swirl tilt so the arm wraps in Z (not a cardboard cutout)
+      const swirlTilt = Math.sin(ang * 2.0 - rho * 2.5) * 0.85 * (0.4 + lum);
+
+      // Outer arm curl toward camera for bowl lip
+      const lip = Math.min(1.2, rho) * 0.95 * (0.4 + lum * 0.7);
+
+      const jitter = n2 * 0.35 * scatter;
+      return (funnel + lumRelief + slab + ridge + swirlTilt + lip + jitter) * depthScale;
     }
     case 'swirl': {
       const ang = Math.atan2(cy + 2.5, cx);

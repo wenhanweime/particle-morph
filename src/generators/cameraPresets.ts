@@ -71,7 +71,7 @@ export const CAMERA_PRESETS: Record<ModeId, CameraPreset> = {
   pinParticleNetwork: { ...IMAGE_FRAME, bloom: [0.06, 0.18, 0.92] },
 
   pinStardustPath: { ...IMAGE_FRAME, bloom: [0.05, 0.16, 0.92] },
-  pinDarkVortex: { ...IMAGE_FRAME, bloom: [0.055, 0.17, 0.91] },
+  pinDarkVortex: { ...IMAGE_FRAME, bloom: [0.07, 0.2, 0.9] },
   pinParticleAbyss: { ...IMAGE_FRAME, bloom: [0.06, 0.18, 0.9] },
 
   // NASA — mild bloom for colorful nebulae; BH stays dark
