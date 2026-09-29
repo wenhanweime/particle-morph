@@ -70,9 +70,9 @@ export const CAMERA_PRESETS: Record<ModeId, CameraPreset> = {
   pinCosmicBurst: { ...IMAGE_FRAME, bloom: [0.1, 0.24, 0.85] },
   pinParticleNetwork: { ...IMAGE_FRAME, bloom: [0.06, 0.18, 0.92] },
 
-  pinStardustPath: { ...IMAGE_FRAME, bloom: [0.08, 0.22, 0.88] },
-  pinDarkVortex: { ...IMAGE_FRAME, bloom: [0.09, 0.24, 0.86] },
-  pinParticleAbyss: { ...IMAGE_FRAME, bloom: [0.1, 0.24, 0.85] },
+  pinStardustPath: { ...IMAGE_FRAME, bloom: [0.05, 0.16, 0.92] },
+  pinDarkVortex: { ...IMAGE_FRAME, bloom: [0.055, 0.17, 0.91] },
+  pinParticleAbyss: { ...IMAGE_FRAME, bloom: [0.06, 0.18, 0.9] },
 
   // NASA — mild bloom for colorful nebulae; BH stays dark
   nasaPillars: { ...IMAGE_FRAME, bloom: [0.12, 0.28, 0.82] },

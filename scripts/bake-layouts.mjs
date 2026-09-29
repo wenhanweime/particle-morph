@@ -55,9 +55,62 @@ const MODE_REFS = {
   pinParticleNetwork: { file: 'pinterest/particle-network-24.jpg', depth: 'cloud' },
 
   // Pinterest batch 3 (25–27) — pin.it Sep 29
-  pinStardustPath: { file: 'pinterest/grey-space-wallpaper-25.jpg', depth: 'cloud' },
-  pinDarkVortex: { file: 'pinterest/dark-space-field-26.jpg', depth: 'swirl' },
-  pinParticleAbyss: { file: 'pinterest/astronomy-simulation-27.jpg', depth: 'tunnel' },
+  // Tall dark posters: aggressive bright bias + flat/mild depth so perspective
+  // framing does not smear the front-view silhouette into a vague cloud.
+  pinStardustPath: {
+    file: 'pinterest/grey-space-wallpaper-25.jpg',
+    depth: 'sheet',
+    gamma: 1.9,
+    thresh: 0.028,
+    midKill: 0.6,
+    brightBoost: 2.1,
+    hotBoost: 1.7,
+    darkBoost: 0.9,
+    lowMul: 0.7,
+    edgeBoost: 1.4,
+    scatter: 0.28,
+    depthScale: 0.55,
+    sizeScale: 1.15,
+    noCornerWatermark: true, // BR mask was cutting the path fringe
+  },
+  pinDarkVortex: {
+    file: 'pinterest/dark-space-field-26.jpg',
+    // Off-center glowing mouth + dark ridge: sheet preserves silhouette under perspective
+    depth: 'sheet',
+    gamma: 1.88,
+    thresh: 0.026,
+    midKill: 0.58,
+    brightBoost: 2.15,
+    hotBoost: 1.75,
+    darkBoost: 0.85,
+    lowMul: 0.65,
+    edgeBoost: 1.55,
+    scatter: 0.25,
+    depthScale: 0.5,
+    sizeScale: 1.12,
+    noCornerWatermark: true,
+  },
+  pinParticleAbyss: {
+    file: 'pinterest/astronomy-simulation-27.jpg',
+    // Wave ridges + central bowl — mild tunnel (full tunnel warps XY under perspective)
+    depth: 'tunnel',
+    gamma: 1.95,
+    thresh: 0.025,
+    midKill: 0.55,
+    brightBoost: 1.95,
+    hotBoost: 1.55,
+    darkBoost: 0.8,
+    lowMul: 0.62,
+    edgeBoost: 2.2,
+    scatter: 0.28,
+    depthScale: 0.36,
+    tunnelCx: 0.5,
+    tunnelCy: 0.46,
+    sizeScale: 1.12,
+    maskBottom: 0.915, // CREATED BY DOGAN URAL watermark
+    noCornerWatermark: true,
+    colorful: true, // keep amber cores in the bowl
+  },
 
   // NASA Image Library (public domain) — colorful RGB preserved
   nasaPillars: { file: 'nasa/pillars-of-creation.jpg', depth: 'cloud', colorful: true },
@@ -122,37 +175,46 @@ function textMaskWeight(u, v, lum, edge) {
   return m;
 }
 
-function depthForFamily(depth, u, v, x, y, lum, edge, layer, p) {
+function depthForFamily(depth, u, v, x, y, lum, edge, layer, p, cfg = {}) {
   const n1 = hash2(p, 10) - 0.5;
   const n2 = hash2(p, 11) - 0.5;
   const cx = x;
   const cy = y;
+  const scatter = cfg.scatter ?? 1;
+  const depthScale = cfg.depthScale ?? 1;
 
   switch (depth) {
+    case 'sheet': {
+      // Near-planar poster depth — preserves front silhouette under perspective FOV
+      const layerZ = (layer - 1) * 0.22;
+      return (layerZ + (lum - 0.35) * 0.55 + n1 * 0.12 * scatter + edge * 0.15 * n2) * depthScale;
+    }
     case 'swirl': {
       const ang = Math.atan2(cy + 2.5, cx);
       const rad = Math.hypot(cx, cy + 2.5);
       const ridge = Math.sin(ang * 4 - rad * 0.55) * 0.5 + 0.5;
       const layerZ = (layer - 1) * 1.85;
       const ribbonThick = (n1 * 0.85 + (ridge - 0.5) * 1.2) * (0.7 + lum);
-      return layerZ + ribbonThick + (lum - 0.3) * 1.3 + edge * 0.55 * n2;
+      return (layerZ + ribbonThick + (lum - 0.3) * 1.3 + edge * 0.55 * n2) * depthScale * (0.55 + 0.45 * scatter);
     }
     case 'nebula': {
       const ground = v > 0.78;
-      if (ground) return (layer - 1) * 0.15 + n1 * 0.08;
+      if (ground) return ((layer - 1) * 0.15 + n1 * 0.08) * depthScale;
       const rise = 1 - v;
       const layerZ = (layer - 1) * (1.1 + rise * 1.4);
       const armThick = n1 * (0.75 + lum * 1.0) + edge * 0.55 * n2;
-      return layerZ + armThick + (lum - 0.25) * 1.0;
+      return (layerZ + armThick + (lum - 0.25) * 1.0) * depthScale;
     }
     case 'tunnel': {
-      const dx = (u - 0.5) * 2;
-      const dy = (v - 0.48) * 2;
+      const tcx = cfg.tunnelCx ?? 0.5;
+      const tcy = cfg.tunnelCy ?? 0.48;
+      const dx = (u - tcx) * 2;
+      const dy = (v - tcy) * 2;
       const rho = Math.min(1.35, Math.hypot(dx, dy));
       const into = -(1.2 - rho) * (1.2 - rho) * 7.5;
       const wall = (layer - 1) * 1.35;
       const dune = Math.sin(Math.atan2(dy, dx) * 3 + rho * 8) * 0.55 * (0.4 + lum);
-      return into + wall + dune + n1 * 0.35 + (lum - 0.2) * 0.7;
+      return (into + wall + dune + n1 * 0.35 * scatter + (lum - 0.2) * 0.7) * depthScale;
     }
     case 'blackHole': {
       const dx = (u - 0.5) * 2;
@@ -197,7 +259,7 @@ function depthForFamily(depth, u, v, x, y, lum, edge, layer, p) {
     case 'cloud':
     default: {
       const layerZ = (layer - 1) * 2.0;
-      return layerZ + (lum - 0.3) * 1.6 + edge * 0.7 * n1 + n2 * 0.5;
+      return (layerZ + (lum - 0.3) * 1.6 + edge * 0.7 * n1 + n2 * 0.5 * scatter) * depthScale;
     }
   }
 }
@@ -220,7 +282,15 @@ async function bakeFromImage(mode, cfg, count = MAX_COUNT) {
   const wmY0 = Math.floor(h * 0.88);
   const weights = new Float64Array(w * h);
   let total = 0;
-  const gamma = cfg.colorful ? 1.35 : 1.55; // colorful: keep midtone hues
+  const gamma = cfg.gamma ?? (cfg.colorful ? 1.35 : 1.55); // colorful: keep midtone hues
+  const thresh = cfg.thresh ?? 0;
+  const midKill = cfg.midKill ?? 1;
+  const brightBoost = cfg.brightBoost ?? 1.55;
+  const hotBoost = cfg.hotBoost ?? 1.35;
+  const darkBoost = cfg.darkBoost ?? 1.15;
+  const lowMul = cfg.lowMul ?? 1;
+  const edgeBoost = cfg.edgeBoost ?? 1;
+  const maskBottom = cfg.maskBottom ?? 0;
 
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -229,12 +299,22 @@ async function bakeFromImage(mode, cfg, count = MAX_COUNT) {
       const g = data[i + 1] / 255;
       const b = data[i + 2] / 255;
       const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-      let wgt = Math.pow(Math.max(lum, 0.004), gamma);
-      // Keep a little starfield, but favor bright structure
-      if (lum > 0.02 && lum < 0.12) wgt *= 1.15;
-      if (lum > 0.45) wgt *= 1.55;
-      if (lum > 0.7) wgt *= 1.35;
-      if (x >= wmX0 && y >= wmY0) wgt = 0;
+      let wgt = 0;
+      if (lum >= thresh) {
+        wgt = Math.pow(Math.max(lum, 0.004), gamma);
+        // Keep a little starfield, but favor bright structure
+        if (lum > 0.02 && lum < 0.12) wgt *= darkBoost;
+        if (lum >= 0.12 && lum < 0.4) wgt *= midKill;
+        if (lum < 0.25) wgt *= lowMul;
+        if (lum > 0.45) wgt *= brightBoost;
+        if (lum > 0.7) wgt *= hotBoost;
+        if (edgeBoost !== 1) {
+          const edge = edgeAt(data, w, h, x, y);
+          wgt *= 1 + (edgeBoost - 1) * edge;
+        }
+      }
+      if (!cfg.noCornerWatermark && x >= wmX0 && y >= wmY0) wgt = 0;
+      if (maskBottom > 0 && (y + 0.5) / h > maskBottom) wgt = 0;
 
       if (cfg.maskText) {
         const u = (x + 0.5) / w;
@@ -314,7 +394,7 @@ async function bakeFromImage(mode, cfg, count = MAX_COUNT) {
 
     let x = (u - 0.5) * planeW;
     let y = (0.5 - v) * planeH;
-    let z = depthForFamily(depth, u, v, x, y, lum, edge, layer, p);
+    let z = depthForFamily(depth, u, v, x, y, lum, edge, layer, p, cfg);
 
     if (depth === 'blackHole' && lum < 0.12) {
       const R = 8 + hash2(p, 22) * 7;
@@ -336,7 +416,8 @@ async function bakeFromImage(mode, cfg, count = MAX_COUNT) {
     const layerBoost = layer === 0 ? 1.1 : layer === 2 ? 0.88 : 1.0;
     // Tiny size variance — soft accumulation feel, still sharp dots
     const sizeJitter = 0.12 + hash2(p, 4) * 0.14;
-    sizes[p] = (0.2 + lum * 0.5 + sizeJitter) * layerBoost;
+    const sizeScale = cfg.sizeScale ?? 1;
+    sizes[p] = (0.2 + lum * 0.5 + sizeJitter) * layerBoost * sizeScale;
   }
 
   const header = Buffer.alloc(4);
