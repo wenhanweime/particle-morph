@@ -187,7 +187,7 @@ export class ParticleSystem {
       const pw = meta?.planeW ?? 9;
       const ph = meta?.planeH ?? 19.55;
       this.controls.setOrthoPoster(pw, ph, 1.02);
-      // Allow ±32° yaw / ±18° pitch for parallax without losing silhouette
+      // Allow ±32° yaw / ±18° pitch for drag orbit without losing silhouette
       this.controls.setOrbitLimits(36, 22);
       this.material.uniforms.uSizeScale.value =
         this.quality === 'low' ? 1.65 : this.quality === 'high' ? 1.28 : 1.48;
@@ -332,10 +332,6 @@ export class ParticleSystem {
         this.controls.autoRotate(dt, this.autoDemo ? 0.08 : 0);
       }
 
-      if (this.controls.forceStrength > 0.05 && !this.morph.isMorphing) {
-        this.applyPointerForce(dt);
-      }
-
       if (this.morph.update(dt)) {
         this.syncAttributes();
       }
@@ -351,27 +347,6 @@ export class ParticleSystem {
       this.composer.render();
     };
     loop();
-  }
-
-  private applyPointerForce(dt: number): void {
-    const strength = this.controls.forceStrength * 2.0 * dt;
-    const ndc = this.controls.pointerNDC;
-    const positions = this.morph.current.positions;
-    const n = this.count;
-    const step = Math.max(1, Math.floor(n / 8000));
-    for (let i = 0; i < n; i += step) {
-      const i3 = i * 3;
-      const px = positions[i3] * 0.12;
-      const py = positions[i3 + 1] * 0.12;
-      const dx = ndc.x - px;
-      const dy = ndc.y - py;
-      const dist2 = dx * dx + dy * dy + 0.05;
-      const f = strength / dist2;
-      positions[i3] += dx * f * 0.12;
-      positions[i3 + 1] += dy * f * 0.12;
-    }
-    (this.posAttr.array as Float32Array).set(positions);
-    this.posAttr.needsUpdate = true;
   }
 
   dispose(): void {

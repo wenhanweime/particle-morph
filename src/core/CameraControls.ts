@@ -8,7 +8,6 @@ export class OrbitZoomControls {
   private dragging = false;
   private prevX = 0;
   private prevY = 0;
-  private enabledForce = true;
   autoRotateEnabled = false;
 
   /** Clamp orbit around default frontal view (radians from frontal theta/phi) */
@@ -24,8 +23,6 @@ export class OrbitZoomControls {
   private posterPlaneH = 16;
   private posterMargin = 1.06;
 
-  readonly pointerNDC = new THREE.Vector2(0, 0);
-  forceStrength = 0;
 
   /** Fired on a clear horizontal touch flick: -1 = right (prev), +1 = left (next). */
   onHorizontalFlick?: (dir: -1 | 1) => void;
@@ -44,11 +41,8 @@ export class OrbitZoomControls {
     this.bind();
   }
 
-  setForceEnabled(on: boolean): void {
-    this.enabledForce = on;
-  }
 
-  /** Limit yaw/pitch around current home (for image-mode parallax without flipping). */
+  /** Limit yaw/pitch around current home (for image-mode drag orbit without flipping). */
   setOrbitLimits(thetaDeg: number, phiDeg: number): void {
     this.orbitLimitTheta = (thetaDeg * Math.PI) / 180;
     this.orbitLimitPhi = (phiDeg * Math.PI) / 180;
@@ -160,14 +154,6 @@ export class OrbitZoomControls {
   };
 
   private onMove = (e: PointerEvent): void => {
-    const rect = this.dom.getBoundingClientRect();
-    this.pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    this.pointerNDC.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-
-    if (this.enabledForce && !this.dragging) {
-      this.forceStrength = 1;
-    }
-
     if (!this.dragging) return;
     if (this.pointerId != null && e.pointerId !== this.pointerId) return;
 
@@ -203,7 +189,6 @@ export class OrbitZoomControls {
       }
       this.apply();
     }
-    this.forceStrength *= 0.96;
   }
 
   /** Slow yaw for demo — returns suggested direction flip when hitting limit */
