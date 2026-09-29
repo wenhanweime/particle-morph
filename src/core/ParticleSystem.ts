@@ -303,7 +303,12 @@ export class ParticleSystem {
     const w = this.renderer.domElement.parentElement?.clientWidth ?? window.innerWidth;
     const h = this.renderer.domElement.parentElement?.clientHeight ?? window.innerHeight;
     this.camera.aspect = w / h;
-    this.camera.updateProjectionMatrix();
+    // Image modes: recompute ortho-poster FOV for landscape cover vs portrait contain
+    if (this.imageMode) {
+      this.controls.refitOrthoPoster();
+    } else {
+      this.camera.updateProjectionMatrix();
+    }
     this.renderer.setSize(w, h);
     this.composer.setSize(w, h);
     this.material.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);

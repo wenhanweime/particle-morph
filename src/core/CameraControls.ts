@@ -18,6 +18,12 @@ export class OrbitZoomControls {
   private homePhi = Math.PI / 2;
   private homeRadius = 20;
 
+  /** Cached ortho-poster plane for resize refit */
+  private posterActive = false;
+  private posterPlaneW = 9;
+  private posterPlaneH = 16;
+  private posterMargin = 1.06;
+
   readonly pointerNDC = new THREE.Vector2(0, 0);
   forceStrength = 0;
 
@@ -222,6 +228,7 @@ export class OrbitZoomControls {
   }
 
   setWorldView(position: THREE.Vector3, target: THREE.Vector3, fov?: number): void {
+    this.posterActive = false;
     this.target.copy(target);
     this.camera.position.copy(position);
     if (fov != null) {
@@ -249,24 +256,67 @@ export class OrbitZoomControls {
 
   /** Front-on poster view — stores home for limited orbit */
   setOrthoPoster(planeW: number, planeH: number, margin = 1.06): void {
+    this.posterActive = true;
+    this.posterPlaneW = planeW;
+    this.posterPlaneH = planeH;
+    this.posterMargin = margin;
     this.target.set(0, 0, 0);
     const dist = 20;
     this.camera.position.set(0, 0, dist);
     this.camera.near = 0.1;
     this.camera.far = 120;
-    const aspect = this.camera.aspect || 9 / 16;
-    const halfH = (planeH * margin) / 2;
-    const halfW = (planeW * margin) / 2;
-    const needFovY = (2 * Math.atan(halfH / dist) * 180) / Math.PI;
-    const fovFromW = (2 * Math.atan(halfW / (dist * aspect)) * 180) / Math.PI;
-    this.camera.fov = Math.max(needFovY, fovFromW);
-    this.camera.updateProjectionMatrix();
+    this.applyOrthoPosterFov(dist);
     this.camera.lookAt(this.target);
     const offset = new THREE.Vector3().subVectors(this.camera.position, this.target);
     this.spherical.setFromVector3(offset);
     this.homeTheta = this.spherical.theta;
     this.homePhi = this.spherical.phi;
     this.homeRadius = this.spherical.radius;
+  }
+
+  /** Clear poster fit (procedural modes). */
+  clearOrthoPoster(): void {
+    this.posterActive = false;
+  }
+
+  /**
+   * Recompute poster FOV after viewport resize.
+   * Wide / landscape desktop: cover (fill width — crop tall top/bottom).
+   * Portrait / mobile: contain (fit full poster height).
+   */
+  refitOrthoPoster(): void {
+    if (!this.posterActive) return;
+    this.applyOrthoPosterFov(this.spherical.radius || 20);
+  }
+
+  private preferLandscapeFraming(aspect: number): boolean {
+    if (aspect >= 1.12) return true;
+    if (typeof window === 'undefined') return aspect >= 1;
+    try {
+      return window.matchMedia(
+        '(min-width: 900px) and (orientation: landscape), (min-width: 1100px) and (pointer: fine)',
+      ).matches;
+    } catch {
+      return aspect >= 1.12;
+    }
+  }
+
+  private applyOrthoPosterFov(dist: number): void {
+    const aspect = this.camera.aspect || 16 / 9;
+    const margin = this.posterMargin;
+    const halfH = (this.posterPlaneH * margin) / 2;
+    const halfW = (this.posterPlaneW * margin) / 2;
+    const needFovY = (2 * Math.atan(halfH / dist) * 180) / Math.PI;
+    const fovFromW = (2 * Math.atan(halfW / (dist * aspect)) * 180) / Math.PI;
+    // contain = max (full plane visible); cover = min (fill viewport, crop excess)
+    const coverFov = Math.min(needFovY, fovFromW);
+    const containFov = Math.max(needFovY, fovFromW);
+    // Landscape: cover width, ease out ~8% so silhouette edges aren't flush with bezel
+    const fov = this.preferLandscapeFraming(aspect)
+      ? Math.min(containFov, coverFov * 1.08)
+      : containFov;
+    this.camera.fov = Math.min(78, Math.max(12, fov));
+    this.camera.updateProjectionMatrix();
   }
 
   /** Set absolute spherical offset from home (degrees) — for screenshots */

@@ -430,7 +430,7 @@ html, body, #app {
   text-overflow: ellipsis;
 }
 
-/* ── Loading splash (frameless star-dot) ── */
+/* ── Loading splash (frameless dense particle field) ── */
 .ui-loading {
   position: absolute;
   inset: 0;
@@ -439,7 +439,7 @@ html, body, #app {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: 36px;
   pointer-events: none;
   background: transparent;
   border: 0;
@@ -448,15 +448,21 @@ html, body, #app {
 
 .ui-loading-stars {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 180px;
+  height: 180px;
 }
 
 .ui-loading-stars .star {
   --angle: 0deg;
   --radius: 40px;
-  --size: 4px;
+  --size: 1.5px;
   --delay: 0s;
+  --drift: 4s;
+  --twinkle: 1.6s;
+  --glow: 2px;
+  --op: 0.7;
+  --dx: 0px;
+  --dy: 0px;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -466,16 +472,18 @@ html, body, #app {
   border-radius: 50%;
   background: #eef4ff;
   box-shadow:
-    0 0 6px 2px rgba(180, 210, 255, 0.95),
-    0 0 16px 5px rgba(120, 180, 255, 0.45);
+    0 0 calc(var(--glow) * 0.9) calc(var(--glow) * 0.25) rgba(190, 215, 255, 0.85),
+    0 0 calc(var(--glow) * 2.4) calc(var(--glow) * 0.55) rgba(110, 170, 255, 0.28);
   transform:
     rotate(var(--angle))
-    translateY(calc(-1 * var(--radius)));
-  opacity: 0.85;
+    translateY(calc(-1 * var(--radius)))
+    translate(var(--dx), var(--dy));
+  opacity: var(--op);
+  will-change: transform, opacity;
   animation:
-    loading-orbit 3.4s linear infinite,
-    loading-twinkle 1.5s ease-in-out infinite;
-  animation-delay: 0s, var(--delay);
+    loading-drift var(--drift) ease-in-out infinite alternate,
+    loading-twinkle var(--twinkle) ease-in-out infinite;
+  animation-delay: var(--delay), var(--delay);
 }
 
 .ui-loading-text {
@@ -491,23 +499,28 @@ html, body, #app {
   animation: loading-text-pulse 2.2s ease-in-out infinite;
 }
 
-@keyframes loading-orbit {
+/* Soft radial drift — not a rigid spinner of beads */
+@keyframes loading-drift {
   from {
     transform:
       rotate(var(--angle))
-      translateY(calc(-1 * var(--radius)));
+      translateY(calc(-1 * var(--radius)))
+      translate(var(--dx), var(--dy))
+      scale(0.92);
   }
   to {
     transform:
-      rotate(calc(var(--angle) + 360deg))
-      translateY(calc(-1 * var(--radius)));
+      rotate(calc(var(--angle) + 18deg))
+      translateY(calc(-1 * var(--radius) * 1.06))
+      translate(calc(var(--dx) * -1.2), calc(var(--dy) * -1.1))
+      scale(1.08);
   }
 }
 
 @keyframes loading-twinkle {
-  0%, 100% { opacity: 0.3; filter: brightness(0.85); }
-  40% { opacity: 1; filter: brightness(1.5); }
-  70% { opacity: 0.6; filter: brightness(1.1); }
+  0%, 100% { opacity: calc(var(--op) * 0.35); filter: brightness(0.8); }
+  35% { opacity: calc(var(--op) * 1.05); filter: brightness(1.55); }
+  65% { opacity: calc(var(--op) * 0.55); filter: brightness(1.05); }
 }
 
 @keyframes loading-text-pulse {

@@ -3,38 +3,47 @@ import { ParticleSystem } from './core/ParticleSystem';
 import { createUI } from './ui/UI';
 import { preloadImageLayouts } from './generators';
 
+/** Dense grainy starfield loader — matches particle-morph aesthetic (small/dense/varied). */
 function createLoadingOverlay(app: HTMLElement): HTMLElement {
   const loading = document.createElement('div');
   loading.className = 'ui-loading';
   loading.setAttribute('role', 'status');
   loading.setAttribute('aria-live', 'polite');
 
-  // Explicit ring placements (avoid CSS calc modulo — invalidates transforms in some engines)
-  const stars = [
-    { angle: 0, radius: 0, size: 6, delay: 0 },
-    { angle: 0, radius: 38, size: 4, delay: 0.1 },
-    { angle: 30, radius: 48, size: 3, delay: 0.2 },
-    { angle: 60, radius: 36, size: 5, delay: 0.05 },
-    { angle: 90, radius: 52, size: 3, delay: 0.35 },
-    { angle: 120, radius: 40, size: 4, delay: 0.15 },
-    { angle: 150, radius: 56, size: 3, delay: 0.45 },
-    { angle: 180, radius: 34, size: 5, delay: 0.25 },
-    { angle: 210, radius: 46, size: 3, delay: 0.55 },
-    { angle: 240, radius: 42, size: 4, delay: 0.3 },
-    { angle: 270, radius: 54, size: 3, delay: 0.4 },
-    { angle: 300, radius: 38, size: 5, delay: 0.2 },
-    { angle: 330, radius: 50, size: 3, delay: 0.5 },
-  ];
-
-  const starsHtml = stars
-    .map(
-      (s) =>
-        `<span class="star" style="--angle:${s.angle}deg;--radius:${s.radius}px;--size:${s.size}px;--delay:${s.delay}s"></span>`,
-    )
-    .join('');
+  const COUNT = 110;
+  const parts: string[] = [];
+  // Deterministic-ish scatter via golden angle + layered radii (no Math.random in render loop)
+  for (let i = 0; i < COUNT; i++) {
+    const g = (i * 137.508) % 360;
+    // Bias toward center: mix tight core + soft halo
+    const layer = i % 5;
+    const rBase =
+      layer === 0 ? 4 + (i % 17) * 1.1 :
+      layer === 1 ? 18 + (i % 23) * 1.4 :
+      layer === 2 ? 36 + (i % 19) * 1.6 :
+      layer === 3 ? 52 + (i % 13) * 1.8 :
+      8 + ((i * 7) % 68);
+    const radius = Math.min(78, rBase);
+    // Mostly tiny (1–2px), few mid (2.5–3.5), rare larger spark (4px)
+    const sizeRoll = (i * 17 + 3) % 100;
+    const size =
+      sizeRoll < 72 ? 1 + (i % 5) * 0.22 :
+      sizeRoll < 92 ? 2.1 + (i % 4) * 0.28 :
+      3.2 + (i % 3) * 0.35;
+    const delay = ((i * 0.073) % 2.8).toFixed(3);
+    const drift = (2.6 + (i % 11) * 0.28).toFixed(2);
+    const twinkle = (1.1 + (i % 9) * 0.22).toFixed(2);
+    const glow = (size * (0.9 + (i % 4) * 0.25)).toFixed(2);
+    const opacity = (0.28 + ((i * 13) % 60) / 100).toFixed(2);
+    const dx = ((((i * 29) % 21) - 10) * 0.35).toFixed(2);
+    const dy = ((((i * 41) % 21) - 10) * 0.35).toFixed(2);
+    parts.push(
+      `<span class="star" style="--angle:${g.toFixed(2)}deg;--radius:${radius.toFixed(1)}px;--size:${size.toFixed(2)}px;--delay:${delay}s;--drift:${drift}s;--twinkle:${twinkle}s;--glow:${glow}px;--op:${opacity};--dx:${dx}px;--dy:${dy}px"></span>`,
+    );
+  }
 
   loading.innerHTML = `
-    <div class="ui-loading-stars" aria-hidden="true">${starsHtml}</div>
+    <div class="ui-loading-stars" aria-hidden="true">${parts.join('')}</div>
     <div class="ui-loading-text">加载粒子布局…</div>
   `;
   app.appendChild(loading);
